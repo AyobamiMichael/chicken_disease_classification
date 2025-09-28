@@ -63,3 +63,70 @@ def save_json(path: Path, data: dict):
         json.dump(data, f, indent=4)
     logger.info(f"json file saved at: {path}")
 
+
+@ensure_annotations
+def load_json(path: Path) -> ConfigBox:
+    """load json files data
+    Args:
+        path (Path): path to the json file
+    
+    Returns:
+        ConfigBox: data as class attributes instead of dictionary
+
+    """
+    with open(path, "r") as f:
+        content = json.load(f)
+    logger.info(f"json file: {path} loaded successfully")
+    return ConfigBox(content)
+
+@ensure_annotations
+def save_bin(data: Any, path: Path):
+    """save any data type as binary file
+
+    Args:
+        data (Any): data to be saved
+        path (Path): path to the binary file
+    """
+    joblib.dump(value=data, filename=path)
+    logger.info(f"binary file saved at: {path}")
+
+@ensure_annotations
+def load_bin(path: Path) -> Any:
+    """load binary data
+
+    Args:
+        path (Path): path to the binary file
+
+    Returns:
+        Any: data stored in the binary file
+    """
+    data = joblib.load(filename=path)
+    logger.info(f"binary file: {path} loaded successfully")
+    return data
+
+@ensure_annotations
+def get_size(path: Path) -> str:
+    """get size in KB
+
+    Args:
+        path (Path): path to the file
+
+    Returns:
+        str: size in KB
+    """
+    size_in_kb = round(os.path.getsize(path) / 1024)
+    return f"~ {size_in_kb} KB"
+
+def decodeImage(imagestring, filName):
+    imgdata = base64.b64decode(imagestring)
+    with open(filName, 'wb') as f:
+        f.write(imgdata)
+        f.close()
+    logger.info(f"Image saved at: {filName}")
+
+def encodeImageIntoBase64(croppedImagePath):
+    with open(croppedImagePath, "rb") as f:
+        my_string = base64.b64encode(f.read())
+        logger.info(f"Image encoded from: {croppedImagePath}")
+        return my_string
+
